@@ -1,0 +1,6 @@
+[workspace]
+members = [
+    "mirai-jni-rs",
+    "mirai-jni-rs-macro",
+    "example"
+]
