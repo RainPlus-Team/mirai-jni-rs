@@ -19,7 +19,7 @@ impl Member<'_> {
     }
     pub fn name_card(&mut self) -> String {
         let str = self.env.call_method(&self.raw, "getNameCard", format!("()L{};", classes::STRING), &[]).unwrap();
-        self.env.get_string(str.borrow().l().unwrap().into()).unwrap().into()
+        from_jni_str!(self.env, str).unwrap().into()
     }
 }
 

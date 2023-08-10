@@ -5,7 +5,7 @@ import net.mamoe.mirai.utils.ExternalResource.Companion.toExternalResource
 
 object Helper {
     @JvmStatic
-    fun bytesToExternalResource(bytes: Array<Byte>): ExternalResource {
-        return bytes.toByteArray().toExternalResource();
+    fun bytesToExternalResource(bytes: ByteArray): ExternalResource {
+        return bytes.toExternalResource();
     }
 }

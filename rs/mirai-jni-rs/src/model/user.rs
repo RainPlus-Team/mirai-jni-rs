@@ -14,7 +14,7 @@ impl User<'_> {
     }
     pub fn nick(&mut self) -> String { // TODO: extend it from UserOrBot
         let str = self.env.call_method(&self.raw, "getNick", format!("()L{};", classes::STRING), &[]).unwrap();
-        self.env.get_string(str.borrow().l().unwrap().into()).unwrap().into()
+        from_jni_str!(self.env, str).unwrap().into()
     }
 }
 

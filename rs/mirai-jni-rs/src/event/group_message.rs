@@ -33,7 +33,7 @@ impl GroupMessageEvent<'_> {
     pub fn msg_str(&mut self) -> String {
         let message = self.env.call_method(&self.raw, "getMessage", format!("()L{};", classes::MESSAGE_CHAIN), &[]).unwrap();
         let str = self.env.call_method(message.borrow().l().unwrap(), "contentToString", format!("()L{};", classes::STRING), &[]).unwrap();
-        self.env.get_string(str.borrow().l().unwrap().into()).unwrap().into()
+        from_jni_str!(self.env, str).unwrap().into()
     }
 }
 
