@@ -26,6 +26,7 @@ tasks.test {
 }
 
 tasks.named<JavaExec>("run") {
+    standardInput = System.`in`
     if (project.hasProperty("workDir")) {
         workingDir = file(project.property("workDir") as String)
     }
