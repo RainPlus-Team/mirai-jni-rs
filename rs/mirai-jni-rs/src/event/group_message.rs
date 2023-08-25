@@ -8,7 +8,7 @@ pub struct GroupMessageEvent<'a> {
 }
 
 pub struct GroupMessageHandler<'a> {
-    callback: fn(Bot, GroupMessageEvent<'a>) -> ()
+    callback: Box<dyn FnMut(Bot, GroupMessageEvent<'a>) -> ()>
 }
 
 impl <'a>From<(JNIEnv<'a>, JObject<'a>)> for GroupMessageEvent<'a> {
@@ -37,16 +37,18 @@ impl GroupMessageEvent<'_> {
     }
 }
 
-impl <'a>EventHandler<'a, GroupMessageEvent<'a>> for GroupMessageHandler<'a> {
-    fn new(callback: fn(Bot, GroupMessageEvent<'a>) -> ()) -> Self {
-        GroupMessageHandler { callback }
+impl<'a> EventHandler<'a> for GroupMessageHandler<'a> {
+    type ET = GroupMessageEvent<'a>;
+
+    fn new<F: FnMut(Bot, Self::ET) -> () + 'static>(callback: F) -> Self {
+        GroupMessageHandler { callback: Box::new(callback) }
     }
 
     fn class_name(&self) -> &'static str {
         classes::GROUP_MESSAGE_EVENT
     }
 
-    fn on_event(&self, bot: Bot, event_data: GroupMessageEvent<'a>) {
+    fn on_event(&mut self, bot: Bot, event_data: Self::ET) {
         (self.callback)(bot, event_data);
     }
 }

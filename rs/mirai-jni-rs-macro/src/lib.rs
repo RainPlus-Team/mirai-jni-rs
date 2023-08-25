@@ -18,7 +18,7 @@ pub fn bot_initialize(_args: TokenStream, input: TokenStream) -> TokenStream {
             match class_name {
                 mirai_jni_rs::classes::GROUP_MESSAGE_EVENT => {
                     let ptr = ptr as *mut mirai_jni_rs::event::group_message::GroupMessageHandler;
-                    unsafe { ptr.as_ref().unwrap().on_event((env.unsafe_clone(), bot).into(), (env, event).into()) }
+                    unsafe { ptr.as_mut().unwrap().on_event((env.unsafe_clone(), bot).into(), (env, event).into()) }
                 }
                 &_ => unreachable!()
             }
