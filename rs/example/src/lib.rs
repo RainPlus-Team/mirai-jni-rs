@@ -1,9 +1,11 @@
 use std::env;
 
-use mirai_jni_rs::{bot_initialize, event::{group_message::{GroupMessageHandler, GroupMessageEvent}, EventHandler}, model::bot::{Bot, login::BotAuthorization}};
+use mirai_jni_rs::{bot_initialize, event::{group_message::{GroupMessageHandler, GroupMessageEvent}, EventHandler}, model::bot::{Bot, login::BotAuthorization}, use_events};
+
+use_events!();
 
 #[bot_initialize]
-pub fn Bot_initialize() {
+pub fn initialize() {
     println!("Initializing...");
     println!("This example uses QR code login by default.");
     let mut bot = Bot::new(&mut env, env::var("QQ_ID").expect("cannot get qq id from env").parse().expect("not a valid qq id"), BotAuthorization::QRCode);
