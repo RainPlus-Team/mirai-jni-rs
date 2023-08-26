@@ -2,6 +2,8 @@ use jni::{JNIEnv, objects::JObject};
 
 use crate::classes;
 
+use super::JavaObject;
+
 pub struct User<'a> {
     env: JNIEnv<'a>,
     raw: JObject<'a>
@@ -15,6 +17,12 @@ impl User<'_> {
     pub fn nick(&mut self) -> String { // TODO: extend it from UserOrBot
         let str = self.env.call_method(&self.raw, "getNick", format!("()L{};", classes::STRING), &[]).unwrap();
         from_jni_str!(self.env, str).unwrap().into()
+    }
+}
+
+impl<'a> From<JavaObject<'a>> for User<'a> {
+    fn from(value: JavaObject<'a>) -> Self {
+        todo!()
     }
 }
 

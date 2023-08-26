@@ -2,7 +2,7 @@ use jni::{objects::JObject, JNIEnv};
 
 use crate::classes;
 
-use super::user::User;
+use super::{user::User, JavaObject};
 
 pub struct Member<'a> {
     env: JNIEnv<'a>,
@@ -20,6 +20,12 @@ impl Member<'_> {
     pub fn name_card(&mut self) -> String {
         let str = self.env.call_method(&self.raw, "getNameCard", format!("()L{};", classes::STRING), &[]).unwrap();
         from_jni_str!(self.env, str).unwrap().into()
+    }
+}
+
+impl<'a> From<JavaObject<'a>> for Member<'a> {
+    fn from(value: JavaObject<'a>) -> Self {
+        todo!()
     }
 }
 

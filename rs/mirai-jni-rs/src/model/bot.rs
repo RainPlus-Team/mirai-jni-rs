@@ -1,5 +1,7 @@
 use jni::{objects::JObject, JNIEnv};
 
+use super::JavaObject;
+
 pub mod login;
 mod configuration;
 mod action;
@@ -16,6 +18,12 @@ impl Bot<'_> {
     }
     pub fn is_online(&mut self) -> Result<bool, jni::errors::Error> {
         self.env.call_method(&self.raw, "isOnline", "()Z", &[]).map(|x| x.z().unwrap())
+    }
+}
+
+impl<'a> From<JavaObject<'a>> for Bot<'a> {
+    fn from(value: JavaObject<'a>) -> Self {
+        todo!()
     }
 }
 
