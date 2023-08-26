@@ -12,7 +12,7 @@ pub fn bot_initialize(_args: TokenStream, input: TokenStream) -> TokenStream {
         ptr: i64,
         bot: jni::objects::JObject,
         event: jni::objects::JObject) {
-            use mirai_jni_rs::bot::event::EventHandler;
+            use mirai_jni_rs::event::EventHandler;
             let jstr = env.get_string(&class_name).unwrap();
             let class_name = jstr.to_str().unwrap();
             match class_name {

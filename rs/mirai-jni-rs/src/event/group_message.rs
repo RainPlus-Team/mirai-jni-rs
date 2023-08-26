@@ -1,6 +1,8 @@
 use jni::{objects::JObject, JNIEnv};
 
-use crate::{classes, bot::{Bot, event::EventHandler}, model::member::Member};
+use crate::{classes, model::bot::Bot, model::member::Member};
+
+use super::EventHandler;
 
 pub struct GroupMessageEvent<'a> {
     env: JNIEnv<'a>,

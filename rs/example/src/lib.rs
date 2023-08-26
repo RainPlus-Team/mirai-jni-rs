@@ -1,6 +1,6 @@
 use std::env;
 
-use mirai_jni_rs::{bot_initialize, event::group_message::{GroupMessageHandler, GroupMessageEvent}, bot::{event::EventHandler, Bot, login::BotAuthorization}};
+use mirai_jni_rs::{bot_initialize, event::{group_message::{GroupMessageHandler, GroupMessageEvent}, EventHandler}, model::bot::{Bot, login::BotAuthorization}};
 
 #[bot_initialize]
 pub fn Bot_initialize() {
@@ -9,7 +9,7 @@ pub fn Bot_initialize() {
     let mut bot = Bot::new(&mut env, env::var("QQ_ID").expect("cannot get qq id from env").parse().expect("not a valid qq id"), BotAuthorization::QRCode);
     println!("Bot created");
     println!("Setting protocol...");
-    bot.protocol(mirai_jni_rs::bot::login::Protocol::MacOS).expect("failed to set protocol");
+    bot.protocol(mirai_jni_rs::model::bot::login::Protocol::MacOS).expect("failed to set protocol");
     println!("Setting up device info...");
     bot.file_based_device_info("device.json").expect("failed to set device info");
     println!("Logging in...");

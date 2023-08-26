@@ -1,18 +1,8 @@
 use jni::objects::JValueGen;
 
-use crate::classes;
+use crate::{classes, event::EventHandler};
 
 use super::Bot;
-
-pub trait EventHandler<'a> {
-    type ET;
-
-    fn new<F: FnMut(Bot, Self::ET) -> () + 'static>(callback: F) -> Self;
-
-    fn class_name(&self) -> &'static str;
-
-    fn on_event(&mut self, bot: Bot, event_data: Self::ET);
-}
 
 impl<'a> Bot<'_> {
     pub fn register_event<E: EventHandler<'a>>(&mut self, event: E) -> Result<(), jni::errors::Error> {
