@@ -1,6 +1,6 @@
 use jni::{JNIEnv, objects::JValueGen};
 
-use crate::classes;
+use crate::{classes, model::JavaObject};
 
 use super::Bot;
 
@@ -50,6 +50,6 @@ impl Bot<'_> {
             j_auth.borrow()
         ]).unwrap().l().unwrap();
 
-        (env, bot).into()
+        JavaObject::new(&env, &bot).into()
     }
 }

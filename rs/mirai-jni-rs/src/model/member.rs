@@ -2,11 +2,10 @@ use jni::{objects::JObject, JNIEnv};
 
 use crate::classes;
 
-use super::user::User;
+use super::{user::User, JavaObject};
 
 pub struct Member<'a> {
-    env: JNIEnv<'a>,
-    raw: JObject<'a>,
+    obj: JavaObject<'a>,
     user: User<'a>
 }
 
@@ -18,18 +17,23 @@ impl Member<'_> {
         self.user.nick()
     }
     pub fn name_card(&mut self) -> String {
-        let str = self.env.call_method(&self.raw, "getNameCard", format!("()L{};", classes::STRING), &[]).unwrap();
-        from_jni_str!(self.env, str).unwrap().into()
+        let (env, obj) = self.obj.r#use();
+        let str = env.call_method(&obj, "getNameCard", format!("()L{};", classes::STRING), &[]).unwrap();
+        from_jni_str!(env, str).unwrap().into()
+    }
+}
+
+impl<'a> From<JavaObject<'a>> for Member<'a> {
+    fn from(value: JavaObject<'a>) -> Self {
+        Member { obj: value.clone(), user: value.into() }
     }
 }
 
 impl <'a>From<(JNIEnv<'a>, JObject<'a>)> for Member<'a> {
     fn from(value: (JNIEnv<'a>, JObject<'a>)) -> Self {
-        let user_env = unsafe { value.0.unsafe_clone() };
         Member {
-            env: value.0,
-            raw: unsafe { JObject::from_raw(value.1.clone()) },
-            user: (user_env, value.1).into()
+            obj: JavaObject::new(&value.0, &value.1),
+            user: JavaObject::new(&value.0, &value.1).into()
         }
     }
 }
