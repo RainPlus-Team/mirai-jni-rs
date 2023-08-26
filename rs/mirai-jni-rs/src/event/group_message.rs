@@ -1,41 +1,37 @@
-use jni::{objects::JObject, JNIEnv};
-
-use crate::{classes, model::bot::Bot, model::member::Member};
+use crate::{classes, model::{bot::Bot, JavaObject}, model::member::Member};
 
 use super::EventHandler;
 
 pub struct GroupMessageEvent<'a> {
-    env: JNIEnv<'a>,
-    raw: JObject<'a>
+    obj: JavaObject<'a>
 }
 
 pub struct GroupMessageHandler<'a> {
     callback: Box<dyn FnMut(Bot, GroupMessageEvent<'a>) -> ()>
 }
 
-impl <'a>From<(JNIEnv<'a>, JObject<'a>)> for GroupMessageEvent<'a> {
-    fn from(value: (JNIEnv<'a>, JObject<'a>)) -> Self {
-        GroupMessageEvent {
-            env: value.0,
-            raw: value.1
-        }
+impl<'a> From<JavaObject<'a>> for GroupMessageEvent<'a> {
+    fn from(value: JavaObject<'a>) -> Self {
+        GroupMessageEvent { obj: value }
     }
 }
 
 impl GroupMessageEvent<'_> {
     pub fn from_group(&mut self) -> i64 {
-        let group = self.env.call_method(&self.raw, "getGroup", format!("()L{};", classes::GROUP), &[]).unwrap();
-        self.env.call_method(group.borrow().l().unwrap(), "getId", "()J", &[]).unwrap().j().unwrap()
+        let (env, obj) = self.obj.r#use();
+        let group = env.call_method(&obj, "getGroup", format!("()L{};", classes::GROUP), &[]).unwrap();
+        env.call_method(group.borrow().l().unwrap(), "getId", "()J", &[]).unwrap().j().unwrap()
     }
-    pub fn sender<'a>(&'a self) -> Member {
-        let mut env = unsafe { self.env.unsafe_clone() };
-        let sender = env.call_method(&self.raw, "getSender", format!("()L{};", classes::MEMBER), &[]).unwrap();
-        (env, sender.l().unwrap()).into()
+    pub fn sender<'a>(&'a mut self) -> Member {
+        let (env, obj) = self.obj.r#use();
+        let sender = env.call_method(&obj, "getSender", format!("()L{};", classes::MEMBER), &[]).unwrap();
+        JavaObject::new(&env, &sender.l().unwrap()).into()
     }
     pub fn msg_str(&mut self) -> String {
-        let message = self.env.call_method(&self.raw, "getMessage", format!("()L{};", classes::MESSAGE_CHAIN), &[]).unwrap();
-        let str = self.env.call_method(message.borrow().l().unwrap(), "contentToString", format!("()L{};", classes::STRING), &[]).unwrap();
-        from_jni_str!(self.env, str).unwrap().into()
+        let (env, obj) = self.obj.r#use();
+        let message = env.call_method(&obj, "getMessage", format!("()L{};", classes::MESSAGE_CHAIN), &[]).unwrap();
+        let str = env.call_method(message.borrow().l().unwrap(), "contentToString", format!("()L{};", classes::STRING), &[]).unwrap();
+        from_jni_str!(env, str).unwrap().into()
     }
 }
 
