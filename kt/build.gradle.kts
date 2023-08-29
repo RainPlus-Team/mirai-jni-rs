@@ -1,4 +1,4 @@
-import org.jetbrains.kotlin.backend.common.push
+val nativeName = "bot.example"
 
 plugins {
     kotlin("jvm") version "1.9.0"
@@ -9,7 +9,7 @@ plugins {
 group = "org.rainplus.qbot.ng"
 version = "1.0-SNAPSHOT"
 
-val main = "org.rainplus.qbot.ng.MainKt";
+val main = "org.rainplus.qbot.ng.MainKt"
 
 repositories {
     mavenCentral()
@@ -27,11 +27,22 @@ tasks.test {
     useJUnitPlatform()
 }
 
+tasks.withType<ProcessResources> {
+    filesMatching("native.properties") {
+        expand("nativeFilename" to nativeName)
+    }
+}
+
+tasks.named("build") {
+    mustRunAfter("buildNative")
+}
+
 tasks.named<JavaExec>("run") {
-    dependsOn("buildNative")
     standardInput = System.`in`
-    if (project.hasProperty("workDir")) {
-        workingDir = file(project.property("workDir") as String)
+    workingDir = if (project.hasProperty("workDir")) {
+        file(project.property("workDir") as String)
+    } else {
+        file("$projectDir/../build/" + if (project.hasProperty("release")) {"release"} else {"debug"})
     }
 }
 
@@ -48,7 +59,7 @@ tasks.named<Jar>("jar") {
 }
 
 tasks.register("buildNative") {
-    outputs.upToDateWhen { false }
+    outputs.upToDateWhen { false } // TODO: proper up to date
     exec {
         workingDir("$projectDir/../rs")
         executable("cargo")
@@ -69,6 +80,7 @@ tasks.register("buildNative") {
 }
 
 tasks.register<Copy>("copyNative") {
+    outputs.upToDateWhen { false } // TODO: proper up to date
     include("bot.dll")
     include("bot.so")
     include("bot.pdb")
@@ -78,11 +90,15 @@ tasks.register<Copy>("copyNative") {
         ""
     }
     if (project.hasProperty("release")) {
-        from("$projectDir/../build/release/rs-target$targetDir/debug")
+        from("$projectDir/../build/release/rs-target$targetDir/release")
         into("$projectDir/../build/release")
     } else {
         from("$projectDir/../build/debug/rs-target$targetDir/debug")
         into("$projectDir/../build/debug")
+    }
+    rename {
+        val ext = it.substring(3)
+        nativeName + ext
     }
 }
 
