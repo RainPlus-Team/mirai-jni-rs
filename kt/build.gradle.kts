@@ -34,10 +34,11 @@ tasks.withType<ProcessResources> {
 }
 
 tasks.named("build") {
-    mustRunAfter("buildNative")
+    dependsOn("copyNative")
 }
 
 tasks.named<JavaExec>("run") {
+    dependsOn("copyNative")
     standardInput = System.`in`
     workingDir = if (project.hasProperty("workDir")) {
         file(project.property("workDir") as String)
@@ -62,7 +63,7 @@ tasks.register("buildNative") {
     outputs.upToDateWhen { false } // TODO: proper up to date
     exec {
         workingDir("$projectDir/../rs")
-        executable("cargo")
+        executable(if (project.hasProperty("cargo")) {project.property("cargo")} else {"cargo"})
         val list = mutableListOf("build", "--package", "bot", "--target-dir")
         if (project.hasProperty("release")) {
             list.add("$projectDir/../build/release/rs-target")
@@ -76,29 +77,31 @@ tasks.register("buildNative") {
         }
         args(list)
     }
-    finalizedBy("copyNative")
 }
 
-tasks.register<Copy>("copyNative") {
+tasks.register("copyNative") {
     outputs.upToDateWhen { false } // TODO: proper up to date
-    include("bot.dll")
-    include("bot.so")
-    include("bot.pdb")
-    val targetDir = if (project.hasProperty("target")) {
-        "/" + project.property("target").toString()
-    } else {
-        ""
-    }
-    if (project.hasProperty("release")) {
-        from("$projectDir/../build/release/rs-target$targetDir/release")
-        into("$projectDir/../build/release")
-    } else {
-        from("$projectDir/../build/debug/rs-target$targetDir/debug")
-        into("$projectDir/../build/debug")
-    }
-    rename {
-        val ext = it.substring(3)
-        nativeName + ext
+    dependsOn("buildNative")
+    copy {
+        include("bot.dll")
+        include("bot.so")
+        include("bot.pdb")
+        val targetDir = if (project.hasProperty("target")) {
+            "/" + project.property("target").toString()
+        } else {
+            ""
+        }
+        if (project.hasProperty("release")) {
+            from("$projectDir/../build/release/rs-target$targetDir/release")
+            into("$projectDir/../build/release")
+        } else {
+            from("$projectDir/../build/debug/rs-target$targetDir/debug")
+            into("$projectDir/../build/debug")
+        }
+        rename {
+            val ext = it.substring(3)
+            nativeName + ext
+        }
     }
 }
 
