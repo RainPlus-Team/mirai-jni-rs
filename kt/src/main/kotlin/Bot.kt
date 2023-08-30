@@ -11,7 +11,6 @@ class Bot {
         val name = System.mapLibraryName(props["filename"].toString())
         val workDir = System.getProperty("user.dir")
         var libPath = Paths.get(workDir.toString(), name)
-        println(libPath)
         if (!libPath.exists()) {
             val codeDir = File(Bot::class.java.protectionDomain.codeSource.location.toURI().path).absolutePath
             libPath = Paths.get(codeDir, name)
