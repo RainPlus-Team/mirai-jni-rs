@@ -1,4 +1,4 @@
-package org.rainplus.qbot.ng
+package org.rainplus.mirai.loader
 
 import Bot
 
@@ -7,7 +7,7 @@ val bot: Bot
     get() = _bot!!
 
 fun main(args: Array<String>) {
-    println("== RainBot-NG ==")
+    println("== Mirai-JNI-Loader ==")
     println("Loading bot core...")
     _bot = Bot()
     bot.initialize()

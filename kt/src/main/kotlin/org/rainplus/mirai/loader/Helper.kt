@@ -1,4 +1,4 @@
-package org.rainplus.qbot.ng
+package org.rainplus.mirai.loader
 
 import net.mamoe.mirai.utils.ExternalResource
 import net.mamoe.mirai.utils.ExternalResource.Companion.toExternalResource

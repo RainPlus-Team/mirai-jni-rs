@@ -8,5 +8,8 @@ Simple. It uses <abbr title="Java Native Interface">JNI</abbr> to connect Rust a
 
 By doing so, Rust can directly access APIs provided by mirai. Keep it high-performance.
 
+## Usage
+Still messing up with build scripts. Developer guide will follow up soon.
+
 ## Contributing
 We welcome all kinds of contributions, the contribution guide will follow up soon.

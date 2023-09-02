@@ -1,4 +1,7 @@
-val nativeName = "bot.example"
+val nativeName: String
+    get() = project.property("native.filename")!!.toString()
+
+val releaseName = if (rootProject.ext.has("releaseName")) {rootProject.ext.get("releaseName")} else {"debug"}
 
 plugins {
     kotlin("jvm") version "1.9.0"
@@ -6,10 +9,10 @@ plugins {
     application
 }
 
-group = "org.rainplus.qbot.ng"
+group = "org.rainplus.mirai.loader"
 version = "1.0-SNAPSHOT"
 
-val main = "org.rainplus.qbot.ng.MainKt"
+val main = "org.rainplus.mirai.loader.MainKt"
 
 repositories {
     mavenCentral()
@@ -33,17 +36,12 @@ tasks.withType<ProcessResources> {
     }
 }
 
-tasks.named("build") {
-    dependsOn("copyNative")
-}
-
 tasks.named<JavaExec>("run") {
-    dependsOn("copyNative")
     standardInput = System.`in`
     workingDir = if (project.hasProperty("workDir")) {
         file(project.property("workDir") as String)
     } else {
-        file("$projectDir/../build/" + if (project.hasProperty("release")) {"release"} else {"debug"})
+        file("${rootProject.buildDir}/$releaseName")
     }
 }
 
@@ -52,57 +50,7 @@ tasks.named<Jar>("jar") {
     from(configurations.runtimeClasspath.get().map(::zipTree))
     exclude("META-INF/*.RSA", "META-INF/*.SF", "META-INF/*.DSA")
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-    destinationDirectory = if (project.hasProperty("release")) {
-        file("$projectDir/../build/release")
-    } else {
-        file("$projectDir/../build/debug")
-    }
-}
-
-tasks.register("buildNative") {
-    outputs.upToDateWhen { false } // TODO: proper up to date
-    exec {
-        workingDir("$projectDir/../rs")
-        executable(if (project.hasProperty("cargo")) {project.property("cargo")} else {"cargo"})
-        val list = mutableListOf("build", "--package", "bot", "--target-dir")
-        if (project.hasProperty("release")) {
-            list.add("$projectDir/../build/release/rs-target")
-            list.add("--release")
-        } else {
-            list.add("$projectDir/../build/debug/rs-target")
-        }
-        if (project.hasProperty("target")) {
-            list.add("--target")
-            list.add(project.property("target").toString())
-        }
-        args(list)
-    }
-}
-
-tasks.register("copyNative") {
-    outputs.upToDateWhen { false } // TODO: proper up to date
-    dependsOn("buildNative")
-    copy {
-        include("bot.dll")
-        include("bot.so")
-        include("bot.pdb")
-        val targetDir = if (project.hasProperty("target")) {
-            "/" + project.property("target").toString()
-        } else {
-            ""
-        }
-        if (project.hasProperty("release")) {
-            from("$projectDir/../build/release/rs-target$targetDir/release")
-            into("$projectDir/../build/release")
-        } else {
-            from("$projectDir/../build/debug/rs-target$targetDir/debug")
-            into("$projectDir/../build/debug")
-        }
-        rename {
-            val ext = it.substring(3)
-            nativeName + ext
-        }
-    }
+    destinationDirectory = file("${rootProject.buildDir}/$releaseName")
 }
 
 kotlin {

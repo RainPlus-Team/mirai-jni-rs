@@ -1,8 +1,8 @@
-package org.rainplus.qbot.ng.api
+package org.rainplus.mirai.loader.api
 
 import net.mamoe.mirai.Bot
 import net.mamoe.mirai.event.Event
-import org.rainplus.qbot.ng.bot as mainBot
+import org.rainplus.mirai.loader.bot as mainBot
 
 object BotEvent {
     @JvmStatic

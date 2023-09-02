@@ -1,4 +1,4 @@
-package org.rainplus.qbot.ng.api
+package org.rainplus.mirai.loader.api
 
 import kotlinx.coroutines.runBlocking
 import net.mamoe.mirai.Bot
