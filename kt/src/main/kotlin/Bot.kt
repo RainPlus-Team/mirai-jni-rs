@@ -6,14 +6,15 @@ import kotlin.io.path.exists
 
 class Bot {
     init {
+        val props = Properties()
+        props.load(Bot::class.java.getResourceAsStream("native.properties"))
+
         val workDir = System.getProperty("user.dir")
         val codeFile = File(Bot::class.java.protectionDomain.codeSource.location.toURI().path)
         val codeDir = codeFile.absolutePath
         var name = System.mapLibraryName(codeFile.nameWithoutExtension)
         var libPath = Paths.get(workDir.toString(), name)
-        if (!libPath.exists()) {
-            val props = Properties()
-            props.load(Bot::class.java.getResourceAsStream("native.properties"))
+        if (props["private"].toString() == "yes" || !libPath.exists()) {
             name = System.mapLibraryName(props["filename"].toString())
             libPath = Paths.get(workDir.toString(), name)
             if (!libPath.exists()) {
