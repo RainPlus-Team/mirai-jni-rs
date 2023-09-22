@@ -1,20 +1,6 @@
-use crate::{classes, model::{bot::Bot, JavaObject}, model::member::Member};
+use crate::{classes, model::JavaObject, model::member::Member};
 
-use super::EventHandler;
-
-pub struct GroupMessageEvent<'a> {
-    obj: JavaObject<'a>
-}
-
-pub struct GroupMessageHandler<'a> {
-    callback: Box<dyn FnMut(Bot, GroupMessageEvent<'a>) -> ()>
-}
-
-impl<'a> From<JavaObject<'a>> for GroupMessageEvent<'a> {
-    fn from(value: JavaObject<'a>) -> Self {
-        GroupMessageEvent { obj: value }
-    }
-}
+event_handler!(GroupMessageHandler, GroupMessageEvent, classes::GROUP_MESSAGE_EVENT);
 
 impl GroupMessageEvent<'_> {
     pub fn from_group(&mut self) -> i64 {
@@ -32,21 +18,5 @@ impl GroupMessageEvent<'_> {
         let message = env.call_method(&obj, "getMessage", format!("()L{};", classes::MESSAGE_CHAIN), &[]).unwrap();
         let str = env.call_method(message.borrow().l().unwrap(), "contentToString", format!("()L{};", classes::STRING), &[]).unwrap();
         from_jni_str!(env, str).unwrap().into()
-    }
-}
-
-impl<'a> EventHandler<'a> for GroupMessageHandler<'a> {
-    type ET = GroupMessageEvent<'a>;
-
-    fn new<F: FnMut(Bot, Self::ET) -> () + 'static>(callback: F) -> Self {
-        GroupMessageHandler { callback: Box::new(callback) }
-    }
-
-    fn class_name(&self) -> &'static str {
-        classes::GROUP_MESSAGE_EVENT
-    }
-
-    fn on_event(&mut self, bot: Bot, event_data: Self::ET) {
-        (self.callback)(bot, event_data);
     }
 }

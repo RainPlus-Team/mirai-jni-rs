@@ -10,6 +10,40 @@ macro_rules! from_jni_str {
     };
 }
 
+macro_rules! event_handler {
+    ($handler:ident, $event:ident, $class_name:expr) => {
+        pub struct $event<'a> {
+            obj: crate::model::JavaObject<'a>
+        }
+        
+        pub struct $handler<'a> {
+            callback: Box<dyn FnMut(crate::model::bot::Bot, $event<'a>) -> ()>
+        }
+        
+        impl<'a> From<crate::model::JavaObject<'a>> for $event<'a> {
+            fn from(value: crate::model::JavaObject<'a>) -> Self {
+                $event { obj: value }
+            }
+        }
+        
+        impl<'a> crate::event::EventHandler<'a> for $handler<'a> {
+            type ET = $event<'a>;
+        
+            fn new<F: FnMut(crate::model::bot::Bot, Self::ET) -> () + 'static>(callback: F) -> Self {
+                $handler { callback: Box::new(callback) }
+            }
+        
+            fn class_name(&self) -> &'static str {
+                $class_name
+            }
+        
+            fn on_event(&mut self, bot: crate::model::bot::Bot, event_data: Self::ET) {
+                (self.callback)(bot, event_data);
+            }
+        }
+    };
+}
+
 #[macro_export]
 macro_rules! use_events {
     () => {

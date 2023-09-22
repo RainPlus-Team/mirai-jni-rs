@@ -10,4 +10,6 @@ pub trait EventHandler<'a> {
     fn on_event(&mut self, bot: Bot, event_data: Self::ET);
 }
 
+pub mod bot_online;
+pub mod bot_offline;
 pub mod group_message;
