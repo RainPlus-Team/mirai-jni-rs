@@ -14,7 +14,7 @@ tasks.register("build") {
     group = "build"
     outputs.upToDateWhen { false } // TODO: proper up to date
     exec {
-        workingDir("$projectDir")
+        workingDir(projectDir)
         executable(cargoExecutable)
         val list = mutableListOf("build", "--target-dir", targetDir)
         if (packageName != null) {
