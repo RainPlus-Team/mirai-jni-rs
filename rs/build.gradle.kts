@@ -13,21 +13,21 @@ val targetDir = "$buildOutputDir/rs-target"
 tasks.register("build") {
     group = "build"
     outputs.upToDateWhen { false } // TODO: proper up to date
+    val list = mutableListOf("build", "--target-dir", targetDir)
+    if (packageName != null) {
+        list.addAll(arrayOf("--package", packageName!!))
+    }
+    if (project.hasProperty("release")) {
+        list.add("--release")
+    }
+    if (project.hasProperty("target")) {
+        list.add("--target")
+        list.add(project.property("target").toString())
+    }
     doLast {
         exec {
             workingDir(projectDir)
             executable(cargoExecutable)
-            val list = mutableListOf("build", "--target-dir", targetDir)
-            if (packageName != null) {
-                list.addAll(arrayOf("--package", packageName!!))
-            }
-            if (project.hasProperty("release")) {
-                list.add("--release")
-            }
-            if (project.hasProperty("target")) {
-                list.add("--target")
-                list.add(project.property("target").toString())
-            }
             args(list)
         }
     }
@@ -37,16 +37,16 @@ tasks.register("copy") {
     group = "build"
     outputs.upToDateWhen { false } // TODO: proper up to date
     dependsOn("build")
+    val target = if (project.hasProperty("target")) {
+        "/" + project.property("target").toString()
+    } else {
+        ""
+    }
     doLast {
         copy {
             include("bot.dll")
             include("bot.so")
             include("bot.pdb")
-            val target = if (project.hasProperty("target")) {
-                "/" + project.property("target").toString()
-            } else {
-                ""
-            }
             from("$targetDir$target/$releaseName")
             into(buildOutputDir)
             rename {
