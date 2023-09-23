@@ -1,6 +1,6 @@
 val nativeName: String
     get() = project.property("native.filename")!!.toString()
-val private: String
+val nativePrivate: String
     get() = project.property("native.private")!!.toString()
 
 val releaseName = if (rootProject.ext.has("releaseName")) {rootProject.ext.get("releaseName")} else {"debug"}
@@ -34,8 +34,10 @@ tasks.test {
 
 tasks.withType<ProcessResources> {
     filesMatching("native.properties") {
-        expand("nativeFilename" to nativeName)
-        expand("private" to private)
+        expand(
+            "isPrivate" to nativePrivate,
+            "filename" to nativeName
+        )
     }
 }
 
