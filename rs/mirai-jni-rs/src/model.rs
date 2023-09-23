@@ -20,6 +20,7 @@ impl Clone for JavaObject<'_> {
     }
 }
 
+pub mod env;
 pub mod bot;
 pub mod user;
 pub mod member;
