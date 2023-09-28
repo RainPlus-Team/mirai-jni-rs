@@ -1,4 +1,4 @@
-package org.rainplus.qbot.ng.api
+package org.rainplus.mirai.loader.api
 
 import net.mamoe.mirai.Bot
 import net.mamoe.mirai.utils.BotConfiguration

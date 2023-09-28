@@ -17,9 +17,9 @@ pub const GROUP_MESSAGE_EVENT: &str = "net/mamoe/mirai/event/events/GroupMessage
 
 pub const EXTERNAL_RESOURCE: &str = "net/mamoe/mirai/utils/ExternalResource";
 
-pub const HELPER: &str = "org/rainplus/qbot/ng/Helper";
+pub const HELPER: &str = "org/rainplus/mirai/loader/Helper";
 
-pub const BOT_LOGIN: &str = "org/rainplus/qbot/ng/api/BotLogin";
-pub const BOT_CONF: &str = "org/rainplus/qbot/ng/api/BotConfiguration";
-pub const BOT_ACTION: &str = "org/rainplus/qbot/ng/api/BotAction";
-pub const BOT_EVENT: &str = "org/rainplus/qbot/ng/api/BotEvent";
+pub const BOT_LOGIN: &str = "org/rainplus/mirai/loader/api/BotLogin";
+pub const BOT_CONF: &str = "org/rainplus/mirai/loader/api/BotConfiguration";
+pub const BOT_ACTION: &str = "org/rainplus/mirai/loader/api/BotAction";
+pub const BOT_EVENT: &str = "org/rainplus/mirai/loader/api/BotEvent";
