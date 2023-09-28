@@ -1,4 +1,5 @@
 import net.mamoe.mirai.event.Event
+import org.rainplus.mirai.loader.plugin.ConsolePluginDescription
 import java.io.File
 import java.nio.file.Paths
 import java.util.*
@@ -26,4 +27,11 @@ class Bot {
     external fun initialize()
 
     external fun eventListener(className: String, ptr: Long, bot: net.mamoe.mirai.Bot, event: Event)
+
+    external fun pluginDescription(): ConsolePluginDescription
+
+    external fun pluginInit()
+    external fun pluginLoad()
+    external fun pluginEnable()
+    external fun pluginDisable()
 }

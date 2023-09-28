@@ -4,9 +4,9 @@ val nativePrivate: String
     get() = project.property("native.private")!!.toString()
 
 val asApplication: Boolean
-    get() = (project.findProperty("loader.asApplication") ?: true) as Boolean
+    get() = (project.findProperty("loader.asApplication") ?: "yes") == "yes"
 val asPlugin: Boolean
-    get() = (project.findProperty("loader.asPlugin") ?: false) as Boolean
+    get() = (project.findProperty("loader.asPlugin") ?: "no") == "yes"
 
 val coreVersion: String
     get() = (project.findProperty("mirai.core.version") ?: "2.15.0").toString()
@@ -30,6 +30,16 @@ version = "1.0-SNAPSHOT"
 
 val main = "org.rainplus.mirai.loader.MainKt"
 
+sourceSets {
+    main {
+        kotlin {
+            if (!asPlugin) {
+                exclude("org/rainplus/mirai/loader/plugin/**")
+            }
+        }
+    }
+}
+
 repositories {
     mavenCentral()
 }
@@ -47,7 +57,7 @@ dependencies {
     if (asApplication) {
         runtimeOnly("net.mamoe:mirai-core")
         if (asPlugin) {
-            runtimeOnly("net.mamoe:mirai-console")
+            compileOnly("net.mamoe:mirai-console")
         }
     } else {
         compileOnly("net.mamoe:mirai-core")
