@@ -21,6 +21,12 @@ impl Clone for JavaObject<'_> {
 }
 
 pub mod env;
-pub mod bot;
+
 pub mod user;
+
+pub mod bot_configuration;
+pub mod bot;
+
+pub use bot::Bot;
+
 pub mod member;

@@ -11,9 +11,9 @@ pub fn initialize() {
     let mut bot = env.create_bot(env::var("QQ_ID").expect("cannot get qq id from env").parse().expect("not a valid qq id"), BotAuthorization::QRCode);
     println!("Bot created");
     println!("Setting protocol...");
-    bot.protocol(mirai_jni_rs::model::bot::login::Protocol::MacOS).expect("failed to set protocol");
+    //bot.protocol(mirai_jni_rs::model::bot::login::Protocol::MacOS).expect("failed to set protocol"); // needs work
     println!("Setting up device info...");
-    bot.file_based_device_info("device.json").expect("failed to set device info");
+    //bot.file_based_device_info("device.json").expect("failed to set device info");
     println!("Logging in...");
     bot.login().expect("Bot not logging in");
     let _ = bot.register_event(GroupMessageHandler::new(handle_msg));
