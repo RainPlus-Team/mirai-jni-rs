@@ -3,7 +3,21 @@ val nativeName: String
 val nativePrivate: String
     get() = project.property("native.private")!!.toString()
 
+val asApplication: Boolean
+    get() = (project.findProperty("loader.asApplication") ?: true) as Boolean
+val asPlugin: Boolean
+    get() = (project.findProperty("loader.asPlugin") ?: false) as Boolean
+
+val coreVersion: String
+    get() = (project.findProperty("mirai.core.version") ?: "2.15.0").toString()
+val consoleVersion: String
+    get() = (project.findProperty("mirai.console.version") ?: "2.15.0").toString()
+
 val releaseName = if (rootProject.ext.has("releaseName")) {rootProject.ext.get("releaseName")} else {"debug"}
+
+if (!asApplication && !asPlugin) {
+    error("The loader must be configured as application, plugin or both.")
+}
 
 plugins {
     kotlin("jvm") version "1.9.0"
@@ -21,9 +35,24 @@ repositories {
 }
 
 dependencies {
-    api(platform("net.mamoe:mirai-bom:2.15.0"))
-    api("net.mamoe:mirai-core-api")
-    runtimeOnly("net.mamoe:mirai-core")
+    if (!asPlugin) {
+        api(platform("net.mamoe:mirai-bom:$coreVersion"))
+        api("net.mamoe:mirai-core-api")
+    } else {
+        implementation(platform("net.mamoe:mirai-bom:$coreVersion"))
+        implementation("net.mamoe:mirai-core-api")
+
+        testImplementation("net.mamoe:mirai-console-terminal:$consoleVersion")
+    }
+    if (asApplication) {
+        runtimeOnly("net.mamoe:mirai-core")
+        if (asPlugin) {
+            runtimeOnly("net.mamoe:mirai-console")
+        }
+    } else {
+        compileOnly("net.mamoe:mirai-core")
+        compileOnly("net.mamoe:mirai-console")
+    } // maybe this can be optimized?
 
     testImplementation(kotlin("test"))
 }
