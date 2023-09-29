@@ -1,3 +1,5 @@
+use crate::classes;
+
 use super::JavaObject;
 
 pub use super::bot_configuration::BotConfiguration;
@@ -20,12 +22,9 @@ impl<'a> Bot<'a> {
         env.call_method(&obj, "isOnline", "()Z", &[]).map(|x| x.z().unwrap())
     }
 
-    pub fn get_configuration() -> Result<BotConfiguration<'a>, jni::errors::Error> {
-        todo!()
-    }
-    pub fn set_configuration() {
-        todo!()
-    }
+    simple_getter!(get_configuration, BotConfiguration<'a>, "configuration", l, format!("L{};", classes::BOT_CONFIGURATION), |env, _, result| {
+        JavaObject::new(env, &result).into()
+    });
 }
 
 impl<'a> From<JavaObject<'a>> for Bot<'a> {

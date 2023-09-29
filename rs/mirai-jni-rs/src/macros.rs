@@ -10,6 +10,31 @@ macro_rules! from_jni_str {
     };
 }
 
+macro_rules! simple_getter {
+    ($name:ident, $ret:ty, $field:expr, $gen_name:ident, $type:expr) => {
+        pub fn $name(&mut self) -> $ret {
+            let (env, obj) = self.obj.r#use();
+            env.get_field(obj, $field, $type).unwrap().$gen_name().unwrap()
+        }
+    };
+    ($name:ident, $ret:ty, $field:expr, $gen_name:ident, $type:expr, $processor:expr) => {
+        pub fn $name(&mut self) -> $ret {
+            let (env, obj) = self.obj.r#use();
+            let result = env.get_field(obj, $field, $type).unwrap().$gen_name().unwrap();
+            $processor(env, obj, result)
+        }
+    };
+}
+
+macro_rules! simple_setter {
+    ($name:ident, $r_type:ident, $field:expr, $gen_name:ident, $type:expr) => {
+        pub fn $name(&mut self, value: $r_type) {
+            let (env, obj) = self.obj.r#use();
+            env.set_field(obj, $field, $type, jni::objects::JValueGen::$gen_name(value)).unwrap();
+        }
+    };
+}
+
 macro_rules! event_handler {
     ($handler:ident, $event:ident, $class_name:expr) => {
         pub struct $event<'a> {

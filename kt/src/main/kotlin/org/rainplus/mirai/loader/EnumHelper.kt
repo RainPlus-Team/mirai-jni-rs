@@ -21,6 +21,7 @@ class EnumHelper<T : Enum<*>>(clazz: Class<T>) {
     companion object {
         private val map: HashMap<String, EnumHelper<Enum<*>>> = HashMap()
 
+        @JvmStatic
         fun getOrCreateEnumHelper(clazz: Class<Enum<*>>): EnumHelper<Enum<*>> {
             return if (map.containsKey(clazz.name)) {
                 map[clazz.name]!!
