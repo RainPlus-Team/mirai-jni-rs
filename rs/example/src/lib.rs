@@ -8,7 +8,7 @@ use_events!();
 pub fn initialize() {
     println!("Initializing...");
     println!("This example uses QR code login by default.");
-    let mut bot = env.create_bot(env::var("QQ_ID").expect("cannot get qq id from env").parse().expect("not a valid qq id"), BotAuthorization::QRCode);
+    let mut bot = Bot::new(&env, env::var("QQ_ID").expect("cannot get qq id from env").parse().expect("not a valid qq id"), BotAuthorization::QRCode);
     println!("Bot created");
     println!("Setting protocol...");
     bot.get_configuration().set_protocol(mirai_jni_rs::model::bot_configuration::Protocol::MacOS);
