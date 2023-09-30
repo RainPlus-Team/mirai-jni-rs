@@ -33,6 +33,12 @@ macro_rules! simple_setter {
             env.set_field(obj, $field, $type, jni::objects::JValueGen::$gen_name(value)).unwrap();
         }
     };
+    ($name:ident, $r_type:ident, $field:expr, $gen_name:ident, $type:expr, $processor:expr) => {
+        pub fn $name(&mut self, value: $r_type) {
+            let (env, obj) = self.obj.r#use();
+            env.set_field(obj, $field, $type, $processor(&env, &obj, value)).unwrap();
+        }
+    };
 }
 
 macro_rules! event_handler {

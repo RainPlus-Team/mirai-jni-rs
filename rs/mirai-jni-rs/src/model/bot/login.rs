@@ -1,11 +1,4 @@
-pub enum Protocol {
-    AndroidPhone,
-    AndroidPad,
-    AndroidWatch,
-    IPad,
-    MacOS
-}
-
+#[derive(Debug)]
 pub enum BotAuthorization {
     Password(String),
     QRCode

@@ -1,6 +1,7 @@
 use const_format::concatcp;
 
 pub const CLASS: &str = "java/lang/Class";
+pub const ENUM: &str = "java/lang/Enum";
 pub const STRING: &str = "java/lang/String";
 
 pub const BOT_FACTORY: &str = "net/mamoe/mirai/BotFactory";
