@@ -1,4 +1,10 @@
-use super::JavaObject;
+use jni::objects::JValueGen;
+
+use crate::classes;
+
+use self::login::BotAuthorization;
+
+use super::{JavaObject, env::MiraiEnv};
 
 pub mod login;
 mod configuration;
@@ -10,6 +16,35 @@ pub struct Bot<'a> {
 }
 
 impl Bot<'_> {
+    pub fn new<'a, T>(env: &'a MiraiEnv, qq: i64, auth: T) -> Bot<'a>
+        where T: Into<BotAuthorization>
+    {
+        let mut env = env.get_env();
+        let auth: BotAuthorization = auth.into();
+
+        let class = env.find_class(classes::BOT_AUTHORIZATION).unwrap();
+        let j_auth =
+        match auth {
+            BotAuthorization::Password(password) => {
+                env.call_static_method(class, "byPassword", format!("(L{};)L{};", classes::STRING, classes::BOT_AUTHORIZATION), &[
+                    JValueGen::Object(jni_str!(env, password))
+                ]).unwrap()
+            },
+            BotAuthorization::QRCode => {
+                env.call_static_method(class, "byQRCode", format!("()L{};", classes::BOT_AUTHORIZATION), &[]).unwrap()
+            }
+        };
+
+        let class = env.find_class(classes::BOT_FACTORY).unwrap();
+        let inst = env.get_static_field(class, "INSTANCE", format!("L{}$INSTANCE;", classes::BOT_FACTORY)).unwrap().l().unwrap();
+        let bot = env.call_method(inst, "newBot", format!("(JL{};)L{};", classes::BOT_AUTHORIZATION, classes::BOT), &[
+            JValueGen::Long(qq),
+            j_auth.borrow()
+        ]).unwrap().l().unwrap();
+
+        JavaObject::new(&env, &bot).into()
+    }
+
     pub fn login(&mut self) -> Result<(), jni::errors::Error> {
         let (env, obj) = self.obj.r#use();
         env.call_method(&obj, "login", "()V", &[]).map(|_x| ())
