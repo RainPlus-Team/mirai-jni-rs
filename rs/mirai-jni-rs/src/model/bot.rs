@@ -17,7 +17,7 @@ pub struct Bot<'a> {
 }
 
 impl<'a> Bot<'a> {
-        pub fn new<'b, T>(env: &'a MiraiEnv, qq: i64, auth: T) -> Bot<'b>
+        pub fn new<'b, T>(env: &'b MiraiEnv, qq: i64, auth: T) -> Bot<'b>
             where T: Into<BotAuthorization>
         {
             let mut env = env.get_env();
