@@ -1,11 +1,14 @@
 import net.mamoe.mirai.event.Event
 import org.rainplus.mirai.loader.plugin.ConsolePluginDescription
 import java.io.File
+import java.nio.file.Path
 import java.nio.file.Paths
 import java.util.*
 import kotlin.io.path.exists
 
 class Bot {
+    public val libPath: Path
+
     init {
         val props = Properties()
         props.load(Bot::class.java.getResourceAsStream("native.properties"))
@@ -23,6 +26,7 @@ class Bot {
             }
         }
         System.load(libPath.toString())
+        this.libPath = libPath
     }
     external fun initialize()
 

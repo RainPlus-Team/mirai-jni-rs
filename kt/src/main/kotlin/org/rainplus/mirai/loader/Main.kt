@@ -9,6 +9,20 @@ val bot: Bot
 fun main(args: Array<String>) {
     println("== Mirai-JNI-Loader ==")
     println("Loading bot core...")
-    _bot = Bot()
-    bot.initialize()
+
+    try {
+        _bot = Bot()
+    } catch(ex: UnsatisfiedLinkError) {
+        println("Unable to locate or load the bot core.")
+        kotlin.system.exitProcess(-1)
+    }
+
+    println("Using core ${bot.libPath}")
+
+    try {
+        bot.initialize()
+    } catch(ex: UnsatisfiedLinkError) {
+        println("This core cannot be used as an standalone application.")
+        kotlin.system.exitProcess(-1)
+    }
 }
