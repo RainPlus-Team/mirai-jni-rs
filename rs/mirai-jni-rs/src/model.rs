@@ -30,3 +30,5 @@ pub mod bot;
 pub use bot::Bot;
 
 pub mod member;
+
+pub mod utils;

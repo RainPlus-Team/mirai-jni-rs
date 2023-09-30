@@ -24,6 +24,7 @@ pub const BOT_OFFLINE_EVENT: &str = "net/mamoe/mirai/event/events/BotOfflineEven
 pub const GROUP_MESSAGE_EVENT: &str = "net/mamoe/mirai/event/events/GroupMessageEvent";
 
 pub const EXTERNAL_RESOURCE: &str = "net/mamoe/mirai/utils/ExternalResource";
+pub const LOGIN_SOLVER: &str = "net/mamoe/mirai/utils/LoginSolver";
 
 pub const HELPER: &str = "org/rainplus/mirai/loader/Helper";
 pub const ENUM_HELPER: &str = "org/rainplus/mirai/loader/EnumHelper";

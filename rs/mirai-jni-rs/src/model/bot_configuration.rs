@@ -2,7 +2,7 @@ use jni::objects::JValueGen;
 
 use crate::classes;
 
-use super::JavaObject;
+use super::{JavaObject, utils::LoginSolver};
 
 pub struct BotConfiguration<'a> {
     obj: JavaObject<'a>
@@ -44,7 +44,13 @@ impl<'a> BotConfiguration<'a> {
         JValueGen::Bool(val as u8)
     });
 
-    // TODO: Login solver
+    simple_getter!(login_solver, LoginSolver, "loginSolver", l, format!("L{};", classes::LOGIN_SOLVER), |env, _, val| {
+        JavaObject::new(env, &val).into()
+    });
+    pub fn set_login_solver(&mut self, login_solver: LoginSolver) {
+        let (env, obj) = self.obj.r#use();
+        env.set_field(obj, "loginSolver", format!("L{};", classes::LOGIN_SOLVER), JValueGen::Object(&(<LoginSolver<'_> as Into<JavaObject<'_>>>::into(login_solver)).object)).unwrap();
+    }
 
     pub fn protocol(&mut self) -> Protocol {
         let (env, obj) = self.obj.r#use();
