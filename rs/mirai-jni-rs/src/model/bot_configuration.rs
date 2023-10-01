@@ -46,11 +46,11 @@ impl<'a> BotConfiguration<'a> {
 
     pub fn login_solver(&mut self) -> Option<LoginSolver> {
         let (env, obj) = self.obj.r#use();
-        let val = env.get_field(obj, "loginSolver", format!("L{};", classes::LOGIN_SOLVER));
-        match val {
-            Ok(val) => Some(JavaObject::new(env, &val.l().unwrap()).into()),
-            Err(jni::errors::Error::NullPtr(_)) => None,
-            _ => panic!()
+        let val = env.get_field(obj, "loginSolver", format!("L{};", classes::LOGIN_SOLVER)).unwrap().l().unwrap();
+        if val.is_null() {
+            None
+        } else {
+            Some(JavaObject::new(env, &val).into())
         }
     }
     pub fn set_login_solver(&mut self, login_solver: Option<LoginSolver>) {
