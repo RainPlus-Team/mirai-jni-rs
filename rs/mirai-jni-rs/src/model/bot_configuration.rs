@@ -1,4 +1,4 @@
-use jni::objects::JValueGen;
+use jni::objects::{JValueGen, JObject};
 
 use crate::classes;
 
@@ -44,12 +44,23 @@ impl<'a> BotConfiguration<'a> {
         JValueGen::Bool(val as u8)
     });
 
-    simple_getter!(login_solver, LoginSolver, "loginSolver", l, format!("L{};", classes::LOGIN_SOLVER), |env, _, val| {
-        JavaObject::new(env, &val).into()
-    });
-    pub fn set_login_solver(&mut self, login_solver: LoginSolver) {
+    pub fn login_solver(&mut self) -> Option<LoginSolver> {
         let (env, obj) = self.obj.r#use();
-        env.set_field(obj, "loginSolver", format!("L{};", classes::LOGIN_SOLVER), JValueGen::Object(&(<LoginSolver<'_> as Into<JavaObject<'_>>>::into(login_solver)).object)).unwrap();
+        let val = env.get_field(obj, "loginSolver", format!("L{};", classes::LOGIN_SOLVER));
+        match val {
+            Ok(val) => Some(JavaObject::new(env, &val.l().unwrap()).into()),
+            Err(jni::errors::Error::NullPtr(_)) => None,
+            _ => panic!()
+        }
+    }
+    pub fn set_login_solver(&mut self, login_solver: Option<LoginSolver>) {
+        let (env, obj) = self.obj.r#use();
+        let val = if let Some(login_solver) = login_solver {
+            (<LoginSolver<'_> as Into<JavaObject<'_>>>::into(login_solver)).object
+        } else {
+            JObject::null()
+        };
+        env.set_field(obj, "loginSolver", format!("L{};", classes::LOGIN_SOLVER), JValueGen::Object(&val)).unwrap();
     }
 
     pub fn protocol(&mut self) -> Protocol {
