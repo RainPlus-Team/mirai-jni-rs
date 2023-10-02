@@ -23,6 +23,7 @@ plugins {
     kotlin("jvm") version "1.9.0"
     java
     application
+    idea
 }
 
 group = "org.rainplus.mirai.loader"
@@ -36,6 +37,14 @@ sourceSets {
             if (!asPlugin) {
                 exclude("org/rainplus/mirai/loader/plugin/**")
             }
+        }
+    }
+}
+
+idea {
+    module {
+        if (!asPlugin) {
+            excludeDirs.add(file("src/main/kotlin/org/rainplus/mirai/loader/plugin"))
         }
     }
 }
