@@ -12,4 +12,4 @@ By doing so, Rust can directly access APIs provided by mirai. Keep it high-perfo
 Developer guide will follow up soon.
 
 ## Contributing
-We welcome all kinds of contributions, the contribution guide will follow up soon.
+We welcome all kinds of contributions. To get started, see [CONTRIBUTING.md](CONTRIBUTING.md).
