@@ -1,5 +1,5 @@
 import net.mamoe.mirai.event.Event
-import org.rainplus.mirai.loader.plugin.ConsolePluginDescription
+//import org.rainplus.mirai.loader.plugin.ConsolePluginDescription // this needs to be fixed for dynamic configuration
 import java.io.File
 import java.nio.file.Path
 import java.nio.file.Paths
@@ -32,7 +32,7 @@ class Bot {
 
     external fun eventListener(className: String, ptr: Long, bot: net.mamoe.mirai.Bot, event: Event)
 
-    external fun pluginDescription(): ConsolePluginDescription
+    //external fun pluginDescription(): ConsolePluginDescription
 
     external fun pluginInit()
     external fun pluginLoad()
