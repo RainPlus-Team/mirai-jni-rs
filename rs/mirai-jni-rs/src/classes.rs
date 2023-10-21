@@ -17,6 +17,8 @@ pub const GROUP_MESSAGE_EVENT: &str = "net/mamoe/mirai/event/events/GroupMessage
 
 pub const EXTERNAL_RESOURCE: &str = "net/mamoe/mirai/utils/ExternalResource";
 
+pub const CONSOLE_PLUGIN_DESCRIPTION: &str = "org/rainplus/mirai/loader/plugin/ConsolePluginDescription";
+
 pub const HELPER: &str = "org/rainplus/mirai/loader/Helper";
 
 pub const BOT_LOGIN: &str = "org/rainplus/mirai/loader/api/BotLogin";
