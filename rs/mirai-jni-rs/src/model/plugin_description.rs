@@ -22,6 +22,17 @@ impl<'a> ConsolePluginDescription<'a> {
         ]).unwrap();
         JavaObject::new(&env, &obj).into()
     }
+
+    pub fn depends_on<I, V>(&mut self, id: I, version_requirement: V, is_optional: bool)
+        where I: AsRef<str>,
+            V: AsRef<str> {
+        let (env, obj) = self.obj.r#use();
+        env.call_method(obj, "dependsOn", format!("(L{};L{};Z)V", classes::STRING, classes::STRING), &[
+            JValueGen::Object(jni_str!(env, id)),
+            JValueGen::Object(jni_str!(env, version_requirement)),
+            JValueGen::Bool(is_optional.into())
+        ]).unwrap();
+    }
 }
 
 impl<'a> From<JavaObject<'a>> for ConsolePluginDescription<'a> {

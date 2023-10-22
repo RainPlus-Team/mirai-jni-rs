@@ -24,8 +24,4 @@ public class ConsolePluginDescription {
     public void dependsOn(String id, @Nullable String versionRequirement, boolean isOptional) {
         dependencies.add(new PluginDependency(id, versionRequirement, isOptional));
     }
-
-    public void dependsOn(String id, @Nullable String versionRequirement) {
-        dependsOn(id, versionRequirement, false);
-    }
 }
