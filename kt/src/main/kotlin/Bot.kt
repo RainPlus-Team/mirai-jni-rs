@@ -33,8 +33,6 @@ class Bot {
 
     external fun pluginDescription(): Any
 
-    external fun pluginInit()
-    external fun pluginLoad()
-    external fun pluginEnable()
-    external fun pluginDisable()
+    external fun pluginEnable(instance: Any)
+    external fun pluginDisable(instance: Any)
 }
