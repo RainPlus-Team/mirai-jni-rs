@@ -31,7 +31,7 @@ class Bot {
 
     external fun eventListener(className: String, ptr: Long, bot: net.mamoe.mirai.Bot, event: Event)
 
-    external fun pluginDescription(): Any
+    external fun pluginDescription(builder: Any)
 
     external fun pluginEnable(instance: Any)
     external fun pluginDisable(instance: Any)

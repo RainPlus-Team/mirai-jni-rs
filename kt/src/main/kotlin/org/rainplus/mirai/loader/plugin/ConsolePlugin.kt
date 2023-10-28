@@ -17,17 +17,7 @@ object ConsolePlugin : KotlinPlugin(description = JvmPluginDescription("org.rain
     }
 
     try {
-        val desc = bot.pluginDescription()
-        if (desc is ConsolePluginDescription) {
-            this.id(desc.id)
-            this.version(desc.version)
-            this.name(desc.name)
-            this.author(desc.author)
-            this.info(desc.info)
-            this.setDependencies(desc.dependencies)
-        } else {
-            throw UnsatisfiedLinkError();
-        }
+        bot.pluginDescription(this)
     } catch (ex: UnsatisfiedLinkError) {
         println("The core cannot be used as a console plugin.")
     }
