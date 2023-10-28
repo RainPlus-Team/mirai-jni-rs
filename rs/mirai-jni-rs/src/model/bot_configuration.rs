@@ -82,7 +82,19 @@ impl<'a> BotConfiguration<'a> {
     simple_getter!(highway_upload_coroutine_count, i32, "highwayUploadCoroutineCount", i, "I");
     simple_setter!(set_highway_upload_coroutine_count, i32, "highwayUploadCoroutineCount", Int, "I");
 
-    // TODO: Device info
+    pub fn random_device_info(&mut self) {
+        let (env, obj) = self.obj.r#use();
+        env.call_method(obj, "randomDeviceInfo", "()V", &[]).unwrap();
+    }
+    pub fn load_device_info_json<J>(&mut self, json: J)
+        where J: AsRef<str>
+    {
+        let (env, obj) = self.obj.r#use();
+        env.call_method(obj, "loadDeviceInfoJson", format!("(L{};)V", classes::STRING), &[
+            JValueGen::Object(jni_str!(env, json))
+        ]).unwrap();
+    }
+    // TODO: Device info getter/setter
 
     // TODO: Logger suppliers
 
