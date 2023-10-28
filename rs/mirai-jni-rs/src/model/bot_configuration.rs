@@ -2,7 +2,7 @@ use jni::objects::{JValueGen, JObject};
 
 use crate::classes;
 
-use super::{JavaObject, utils::LoginSolver};
+use super::{JavaObject, utils::LoginSolver, env::MiraiEnv};
 
 pub struct BotConfiguration<'a> {
     obj: JavaObject<'a>
@@ -43,6 +43,11 @@ impl<'a> BotConfiguration<'a> {
     simple_setter!(set_auto_reconnect_on_force_offline, bool, "autoReconnectOnForceOffline", Bool, "Z", |_, _, val| {
         JValueGen::Bool(val as u8)
     });
+
+    pub fn disable_account_secrets(&mut self) {
+        let (env, obj) = self.obj.r#use();
+        env.call_method(obj, "disableAccountSecretes", "()V", &[]).unwrap();
+    }
 
     pub fn login_solver(&mut self) -> Option<LoginSolver> {
         let (env, obj) = self.obj.r#use();
@@ -98,6 +103,16 @@ impl<'a> BotConfiguration<'a> {
 
     // TODO: Logger suppliers
 
+    pub fn no_network_log(&mut self) {
+        let (env, obj) = self.obj.r#use();
+        env.call_method(obj, "noNetworkLog", "()V", &[]).unwrap();
+    }
+
+    pub fn no_bot_log(&mut self) {
+        let (env, obj) = self.obj.r#use();
+        env.call_method(obj, "noBotLog", "()V", &[]).unwrap();
+    }
+
     simple_getter!(show_verbose_event_log, bool, "isShowingVerboseEventLog", z, "Z");
     simple_setter!(set_show_verbose_event_log, bool, "isShowingVerboseEventLog", Bool, "Z", |_, _, val| {
         JValueGen::Bool(val as u8)
@@ -105,10 +120,27 @@ impl<'a> BotConfiguration<'a> {
 
     // TODO: Contact list cache
 
+    pub fn disable_contact_cache(&mut self) {
+        let (env, obj) = self.obj.r#use();
+        env.call_method(obj, "disableContactCache", "()V", &[]).unwrap();
+    }
+
+    pub fn enable_contact_cache(&mut self) {
+        let (env, obj) = self.obj.r#use();
+        env.call_method(obj, "enableContactCache", "()V", &[]).unwrap();
+    }
+
     simple_getter!(login_cache_enabled, bool, "loginCacheEnabled", z, "Z");
     simple_setter!(set_login_cache_enabled, bool, "loginCacheEnabled", Bool, "Z", |_, _, val| {
         JValueGen::Bool(val as u8)
     });
+
+    pub fn default(env: &'a MiraiEnv<'a>) -> Self {
+        let mut env = env.get_env();
+        let class = env.find_class(classes::BOT_CONFIGURATION).unwrap();
+        let obj = env.get_static_field(class, "Default", format!("L{};", classes::BOT_CONFIGURATION)).unwrap().l().unwrap();
+        JavaObject::new(&env, &obj).into()
+    }
 } // TODO: all callable methods
 
 #[derive(Debug)]
