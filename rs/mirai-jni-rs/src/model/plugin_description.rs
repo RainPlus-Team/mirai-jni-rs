@@ -22,6 +22,56 @@ impl<'a> JvmPluginDescriptionBuilder<'a> {
         JavaObject::new(&env, &obj).into()
     }
 
+    pub fn name<I>(&mut self, name: I) -> &Self
+        where I: AsRef<str>
+    {
+        let (env, obj) = self.obj.r#use();
+        env.call_method(obj, "name", format!("(L{};)L{};", classes::STRING, classes::JVM_PLUGIN_DESCRIPTION_BUILDER), &[
+            JValueGen::Object(jni_str!(env, name))
+        ]).unwrap();
+        self
+    }
+
+    pub fn version<I>(&mut self, version: I) -> &Self
+        where I: AsRef<str>
+    {
+        let (env, obj) = self.obj.r#use();
+        env.call_method(obj, "version", format!("(L{};)L{};", classes::STRING, classes::JVM_PLUGIN_DESCRIPTION_BUILDER), &[
+            JValueGen::Object(jni_str!(env, version))
+        ]).unwrap();
+        self
+    }
+
+    pub fn id<I>(&mut self, id: I) -> &Self
+        where I: AsRef<str>
+    {
+        let (env, obj) = self.obj.r#use();
+        env.call_method(obj, "id", format!("(L{};)L{};", classes::STRING, classes::JVM_PLUGIN_DESCRIPTION_BUILDER), &[
+            JValueGen::Object(jni_str!(env, id))
+        ]).unwrap();
+        self
+    }
+
+    pub fn author<I>(&mut self, author: I) -> &Self
+        where I: AsRef<str>
+    {
+        let (env, obj) = self.obj.r#use();
+        env.call_method(obj, "author", format!("(L{};)L{};", classes::STRING, classes::JVM_PLUGIN_DESCRIPTION_BUILDER), &[
+            JValueGen::Object(jni_str!(env, author))
+        ]).unwrap();
+        self
+    }
+
+    pub fn info<I>(&mut self, info: I) -> &Self
+        where I: AsRef<str>
+    {
+        let (env, obj) = self.obj.r#use();
+        env.call_method(obj, "info", format!("(L{};)L{};", classes::STRING, classes::JVM_PLUGIN_DESCRIPTION_BUILDER), &[
+            JValueGen::Object(jni_str!(env, info))
+        ]).unwrap();
+        self
+    }
+
     pub fn depends_on<I, V>(&mut self, id: I, version_requirement: Option<V>, is_optional: bool)
         where I: AsRef<str>,
             V: AsRef<str>
