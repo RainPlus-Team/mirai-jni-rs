@@ -21,7 +21,7 @@ impl Clone for JavaObject<'_> {
 }
 
 mod plugin_description;
-pub use plugin_description::ConsolePluginDescriptionBuilder;
+pub use plugin_description::JvmPluginDescriptionBuilder;
 
 pub mod env;
 pub mod bot;
